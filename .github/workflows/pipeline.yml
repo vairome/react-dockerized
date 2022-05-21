@@ -11,10 +11,10 @@ on:
 
 jobs:
   
-  avoid_redundancy:
+  cancel_prev_builds:
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Redundant Builds
+      - name: Cancel previous builds
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Push to Docker Hub
+      - name: Push the image to Docker Hub 
         run:  |
           docker build -t app .
           echo ${{ secrets.DOCKER_SECRET }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
