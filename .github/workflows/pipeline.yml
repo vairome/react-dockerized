@@ -10,7 +10,15 @@ on:
      # Triggers the workflow on push and pull request event only for the master branch
 
 jobs:
-  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Find problems with Eslint
+        run: |
+          npm install
+          npm run lint
+
   cancel_prev_builds:
     runs-on: ubuntu-latest
     steps:
@@ -19,16 +27,40 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-  deploy:
-    runs-on: ubuntu-latest #This line refers to the system that runs the action
+  # deploy:
+  #   runs-on: ubuntu-latest #This line refers to the system that runs the action
 
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Push the image to Docker Hub 
+  #       run:  |
+  #         docker build -t app .
+  #         echo ${{ secrets.DOCKER_SECRET }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+  #         docker tag app vairome/react-dockerized-ci-cd
+  #         docker push vairome/react-dockerized-ci-cd
+          
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - name: docker login
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_SECRET }}
 
-      - name: Push the image to Docker Hub 
-        run:  |
-          docker build -t app .
-          echo ${{ secrets.DOCKER_SECRET }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-          docker tag app vairome/react-dockerized-ci-cd
-          docker push vairome/react-dockerized-ci-cd
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Set image id from the last build
+        id: vars
+        run: echo "::set-output name=image_id::$(docker images | grep ${{ secrets.DOCKER_USER }}\/${{ secrets.DOCKER_IMAGE_NAME }} | head -n1 | awk '{print $3}')"
+      
+      - name: Retag image LATEST with image id from the last build
+        run: docker tag ${{ steps.vars.outputs.image_id }} ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
+
+      - name: Docker Push
+        run: |
+          docker push ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
