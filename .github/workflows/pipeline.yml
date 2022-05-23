@@ -10,14 +10,14 @@ on:
      # Triggers the workflow on push and pull request event only for the master branch
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Find problems with Eslint
-  #       run: |
-  #         npm install
-  #         npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Find problems with Eslint
+        run: |
+          npm install
+          npm run lint
 
   cancel_prev_builds:
     runs-on: ubuntu-latest
@@ -26,21 +26,6 @@ jobs:
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
-
-  # deploy:
-  #   runs-on: ubuntu-latest #This line refers to the system that runs the action
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     - name: Push the image to Docker Hub 
-  #       run:  |
-  #         docker build -t app .
-  #         echo ${{ secrets.DOCKER_SECRET }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-  #         docker tag app vairome/react-dockerized-ci-cd
-  #         docker push vairome/react-dockerized-ci-cd
-          
 
   build:
     runs-on: ubuntu-latest
