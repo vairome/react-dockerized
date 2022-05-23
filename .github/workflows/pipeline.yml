@@ -9,15 +9,15 @@ on:
       - "master"
      # Triggers the workflow on push and pull request event only for the master branch
 
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Find problems with Eslint
-#         run: |
-#           npm install
-#           npm run lint
+jobs:
+  # test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Find problems with Eslint
+  #       run: |
+  #         npm install
+  #         npm run lint
 
   cancel_prev_builds:
     runs-on: ubuntu-latest
