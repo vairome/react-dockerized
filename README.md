@@ -3,9 +3,13 @@
 
 This is an image which contains an a React App which is mounted on an ngnix server, which has port 80 released to run the static website.
 
-In addition, this image is linked to a GitHub Actions that updates the static content of the website which triggers on any change push or pull request events from the master branch.
+In addition, this image is linked to a GitHub Actions that updates the static content of the website which triggers on any change push or pull request events from the master branch. It also contains a gitHubb Actions workflow to build and push a docker image tho Docker Hub, updating the tags to maintain previous version of the image.
 
 ![Nginx](https://download.logo.wine/logo/Nginx/Nginx-Logo.wine.png)
+
+## How does the github actions works?
+
+It has three jobs, when a change is pushed to the master branch, either by direct push or by pull request, the action runs a job to cancel any previous build, the second job is testing the code with a linter function and the last job is for login to Docker Hub, and push the image to a repository, with a function to rename tags automatically to maintain previuos images.
 
 ## 🚀 Quick reference
 
@@ -14,15 +18,9 @@ In addition, this image is linked to a GitHub Actions that updates the static co
 •	Where go to get help: https://github.com/vairome/react-dockerized/issues
 
 
-
-
-
-
-
 ## Supported tags and respective Dockerfile Links
 
 •	Latest
-
 
 # How to use this image
 
@@ -42,31 +40,4 @@ To finish we only verify in http://localhost:80/ to visualize the react applicat
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
